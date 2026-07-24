@@ -6,7 +6,11 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
 
@@ -17,9 +21,13 @@ jobs:
           path: vendor
           key: mathlib-v1.0.0-windows   # 版本号变了,这个 key 也要变,才会触发重新下载
 
-      - name: Fetch dependencies
-        if: steps.cache-mathlib.outputs.cache-hit != 'true'   # 只有没命中缓存才真的下载
+        -name: Fetch dependencies (Windows)
+        if: matrix.os == 'windows-latest' && steps.cache-mathlib.outputs.cache-hit != 'true'
         run: .\scripts\fetch_deps.ps1
+
+      - name: Fetch dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest' && steps.cache-mathlib.outputs.cache-hit != 'true'
+        run: ./scripts/fetch_deps.sh
 
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
@@ -35,19 +43,6 @@ jobs:
       - name: Build
         run: cmake --build build --config Debug
 
-      - name: Run
-        run: .\build\Debug\demo.exe
-
       - name: Test
         run: ctest --test-dir build -C Debug --output-on-failure
 
-      - name: Package
-        run: |
-          mkdir dist
-          copy build\Debug\demo.exe dist\
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: demo-windows
-          path: dist/
