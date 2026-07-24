@@ -1,0 +1,12 @@
+name: Hello CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  say-hello:
+    runs-on: windows-latest
+    steps:
+      - name: Print message
+        run: echo "Hello from CI, running on Windows runner"
