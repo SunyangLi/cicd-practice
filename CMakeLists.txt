@@ -8,8 +8,15 @@ add_executable(demo src/main.cpp)
 target_include_directories(demo PRIVATE ${MATHLIB_ROOT})
 target_link_libraries(demo PRIVATE ${MATHLIB_ROOT}/mathlib.lib)
 
+# ---- gtest 部分 ----
+find_package(GTest CONFIG REQUIRED)
+
 enable_testing()
 add_executable(test_add tests/test_add.cpp)
 target_include_directories(test_add PRIVATE ${MATHLIB_ROOT})
-target_link_libraries(test_add PRIVATE ${MATHLIB_ROOT}/mathlib.lib)
-add_test(NAME AddTest COMMAND test_add)
+target_link_libraries(test_add PRIVATE ${MATHLIB_ROOT}/mathlib.lib
+                      GTest::gtest
+                      GTest::gtest_main)
+
+include(GoogleTest)
+gtest_discover_tests(test_add)

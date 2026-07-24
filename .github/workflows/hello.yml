@@ -20,9 +20,12 @@ jobs:
       - name: Fetch dependencies
         if: steps.cache-mathlib.outputs.cache-hit != 'true'   # 只有没命中缓存才真的下载
         run: .\scripts\fetch_deps.ps1
-        
+
       - name: Configure
-        run: cmake -B build -DMATHLIB_ROOT="${{ github.workspace }}/vendor"
+        run: >
+          cmake -B build
+          -DMATHLIB_ROOT="${{ github.workspace }}/vendor"
+          
 
       - name: Build
         run: cmake --build build --config Debug
