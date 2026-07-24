@@ -1,0 +1,35 @@
+name: Build Demo2
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache mathlib
+        id: cache-mathlib
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: mathlib-v1.0.0-${{ matrix.os }}
+
+      - name: Fetch dependencies (Windows)
+        if: matrix.os == 'windows-latest' && steps.cache-mathlib.outputs.cache-hit != 'true'
+        run: .\scripts\fetch_deps.ps1
+
+      - name: Configure
+        run: cmake -B build -DMATHLIB_ROOT="${{ github.workspace }}/vendor"
+
+      - name: Build
+        run: cmake --build build --config Debug
+
+      - name: Test
+        run: ctest --test-dir build -C Debug --output-on-failure
