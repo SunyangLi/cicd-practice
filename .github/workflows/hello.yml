@@ -14,7 +14,10 @@ jobs:
         run: cmake -B build
 
       - name: Build
-        run: cmake --build build
+        run: cmake --build build --config Debug
 
       - name: Run
         run: .\build\Debug\demo.exe
+
+      - name: Test
+        run: ctest --test-dir build -C Debug --output-on-failure
