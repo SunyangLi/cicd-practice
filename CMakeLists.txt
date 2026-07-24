@@ -12,7 +12,7 @@ endif()
 
 add_executable(demo src/main.cpp)
 target_include_directories(demo PRIVATE ${MATHLIB_ROOT})
-target_link_libraries(demo PRIVATE ${MATHLIB_ROOT}/mathlib.lib)
+target_link_libraries(demo PRIVATE ${MATHLIB_LIB})
 
 # ---- gtest 部分 ----
 find_package(GTest CONFIG REQUIRED)
