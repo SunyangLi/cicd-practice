@@ -7,8 +7,9 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
-        os: [windows-latest]
+        os: [windows-latest, ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -24,6 +25,10 @@ jobs:
       - name: Fetch dependencies (Windows)
         if: matrix.os == 'windows-latest' && steps.cache-mathlib.outputs.cache-hit != 'true'
         run: .\scripts\fetch_deps.ps1
+
+      - name: Fetch dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest' && steps.cache-mathlib.outputs.cache-hit != 'true'
+        run: ./scripts/fetch_deps.sh
 
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
