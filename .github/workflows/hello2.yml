@@ -1,4 +1,4 @@
-name: Build Demo2
+name: Build Demo
 
 on:
   push:
@@ -25,8 +25,16 @@ jobs:
         if: matrix.os == 'windows-latest' && steps.cache-mathlib.outputs.cache-hit != 'true'
         run: .\scripts\fetch_deps.ps1
 
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: 'b2f068faf45a3f04145bec0f52a66526ad590227'
+
       - name: Configure
-        run: cmake -B build -DMATHLIB_ROOT="${{ github.workspace }}/vendor"
+        run: >
+          cmake -B build
+          -DMATHLIB_ROOT="${{ github.workspace }}/vendor"
+          -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
       - name: Build
         run: cmake --build build --config Debug
