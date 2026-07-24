@@ -10,9 +10,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch dependencies
-        run: .\scripts\fetch_deps.ps1
+      - name: Cache mathlib
+        id: cache-mathlib
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: mathlib-v1.0.0-windows   # 版本号变了,这个 key 也要变,才会触发重新下载
 
+      - name: Fetch dependencies
+        if: steps.cache-mathlib.outputs.cache-hit != 'true'   # 只有没命中缓存才真的下载
+        run: .\scripts\fetch_deps.ps1
+        
       - name: Configure
         run: cmake -B build -DMATHLIB_ROOT="${{ github.workspace }}/vendor"
 
