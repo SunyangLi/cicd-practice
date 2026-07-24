@@ -12,5 +12,6 @@ int main() {
     std::cout << "AddTest passed: 3 + 4 = " << result << std::endl;
     return 0;   // 返回 0 表示测试通过,CTest 靠这个判断成功/失败
     std::cout << "PASS: add test" << std::endl;
+    std::cout<< "PASS: mathlib_add test" << std::endl;
     return 0;
 }
