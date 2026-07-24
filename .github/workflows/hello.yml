@@ -21,6 +21,11 @@ jobs:
         if: steps.cache-mathlib.outputs.cache-hit != 'true'   # 只有没命中缓存才真的下载
         run: .\scripts\fetch_deps.ps1
 
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: 'b2f068faf45a3f04145bec0f52a66526ad590227'
+
       - name: Configure
         run: >
           cmake -B build
